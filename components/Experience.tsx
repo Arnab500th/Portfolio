@@ -36,7 +36,7 @@ const workExperience = [
         current: true,
     },
     {
-        role: "ML and Python Engineer",
+        role: "ML and Python Intern",
         company: "SRIndia (Qskill)",
         duration: "Jan 2026 – Feb 2026",
         type: "Remote",
