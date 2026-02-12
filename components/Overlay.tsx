@@ -10,19 +10,22 @@ export default function Overlay() {
         offset: ["start start", "end start"],
     });
 
-    const y1 = useTransform(scrollYProgress, [0, 0.15], [0, -100]);
-    const opacity1 = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+    // Sequence the sections so each fades out before the next appears,
+    // preventing early overlap and ensuring the last paragraph vanishes slightly early.
+    const y1 = useTransform(scrollYProgress, [0, 0.08], [0, -100]);
+    const opacity1 = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
 
-    const y2 = useTransform(scrollYProgress, [0.1, 0.35], [100, 0]);
-    const opacity2 = useTransform(scrollYProgress, [0.1, 0.25, 0.4], [0, 1, 0]);
+    const y2 = useTransform(scrollYProgress, [0.08, 0.20], [100, 0]);
+    const opacity2 = useTransform(scrollYProgress, [0.08, 0.20, 0.28], [0, 1, 0]);
 
-    const y3 = useTransform(scrollYProgress, [0.35, 0.6], [100, 0]);
-    const opacity3 = useTransform(scrollYProgress, [0.35, 0.5, 0.7], [0, 1, 0]);
+    const y3 = useTransform(scrollYProgress, [0.26, 0.5], [100, 0]);
+    // Fade out the last paragraph a bit earlier so it vanishes before the final frame
+    const opacity3 = useTransform(scrollYProgress, [0.26, 0.32, 0.36], [0, 1, 0]);
 
     return (
         <div
             ref={ref}
-            className="absolute top-0 left-0 w-full h-[2000vh] pointer-events-none z-10 flex flex-col items-center"
+            className="absolute top-0 left-0 w-full h-full pointer-events-none z-10 flex flex-col items-center"
         >
             {/* Section 1 */}
             <motion.div
@@ -51,7 +54,7 @@ export default function Overlay() {
                     <motion.p
                         initial={{ y: 50, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                         className="text-sm md:text-base font-light text-white/60 mt-2 italic"
                     >
                         Turning curiosity into production-grade code.
@@ -84,7 +87,7 @@ export default function Overlay() {
                         <motion.span
                             initial={{ y: "100%" }}
                             whileInView={{ y: 0 }}
-                            transition={{ duration: 0.6 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
                             className="block"
                         >
                             I build intelligent, data-driven
@@ -94,7 +97,7 @@ export default function Overlay() {
                         <motion.span
                             initial={{ y: "100%" }}
                             whileInView={{ y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
                             className="block bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent"
                         >
                             software systems.
@@ -116,7 +119,7 @@ export default function Overlay() {
                         <motion.span
                             initial={{ y: "100%" }}
                             whileInView={{ y: 0 }}
-                            transition={{ duration: 0.6 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
                             className="block"
                         >
                             From data pipelines to
@@ -126,7 +129,7 @@ export default function Overlay() {
                         <motion.span
                             initial={{ y: "100%" }}
                             whileInView={{ y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
                              className="block bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent"
                         >
                             real-time vision systems.

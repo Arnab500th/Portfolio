@@ -8,8 +8,8 @@ import Contact from "@/components/Contact";
 export default function Home() {
   return (
     <main className="bg-[#121212] w-full min-h-screen">
-      {/* Increased from 1000vh to 2000vh to show all 192 frames smoothly */}
-      <div className="relative h-[1900vh]">
+      {/* Wrapper height controls total scroll length — reduced to shorten post-animation scroll */}
+      <div className="relative h-[900vh]">
         <ScrollyCanvas numFrames={192} />
         <Overlay />
       </div>

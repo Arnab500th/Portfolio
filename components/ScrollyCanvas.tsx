@@ -1,6 +1,6 @@
 "use client";
 
-import { useScroll, useMotionValueEvent, useSpring } from "framer-motion";
+import { useScroll, useMotionValueEvent, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
@@ -12,8 +12,12 @@ export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
   const [failedCount, setFailedCount] = useState(0);
   const { scrollYProgress } = useScroll();
 
+  // Remap scroll progress so the sequence finishes earlier (less scrolling required)
+  // Finish frames near scrollYProgress ~0.36 so they sync with the overlay text.
+  const fastProgress = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 1]);
+
   // Smooth scroll progress
-  const smoothProgress = useSpring(scrollYProgress, {
+  const smoothProgress = useSpring(fastProgress, {
     stiffness: 150,
     damping: 30,
     restDelta: 0.001
@@ -23,10 +27,14 @@ export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
     let isMounted = true;
     let loaded = 0;
     let failed = 0;
+    let earlyMarked = false;
 
     const loadImages = async () => {
       console.log(`Starting to load ${numFrames} images...`);
       
+      // Determine a small threshold so we can enable scrolling early
+      const readyThreshold = Math.max(5, Math.ceil(numFrames * 0.15));
+
       const imagePromises = Array.from({ length: numFrames }, (_, i) => {
         const img = new Image();
         const filename = i.toString().padStart(3, "0");
@@ -36,24 +44,41 @@ export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
           img.onload = () => {
             if (isMounted) {
               loaded++;
-              const progress = Math.round((loaded + failed) / numFrames * 100);
+              // Map incremental progress to 0-90% so final jump to 100% feels faster
+              const progress = Math.round((loaded + failed) / numFrames * 90);
               setLoadedCount(loaded);
               setLoadProgress(progress);
               console.log(`✓ Loaded: ${filename}.png (${loaded}/${numFrames})`);
             }
+            // If we've reached the small ready threshold, enable scroll early
+            if (!earlyMarked && isMounted && (loaded + failed) >= readyThreshold) {
+              earlyMarked = true;
+              setLoadProgress(100);
+              setIsLoaded(true);
+              console.log('Early images ready, enabling scroll');
+            }
+
             resolve(img);
           };
           
           img.onerror = (e) => {
             if (isMounted) {
               failed++;
-              const progress = Math.round((loaded + failed) / numFrames * 100);
+              const progress = Math.round((loaded + failed) / numFrames * 90);
               setFailedCount(failed);
               setLoadProgress(progress);
               console.error(`✗ Failed: ${filename}.png (${failed} failures)`);
             }
             // Still resolve with the image object even on error
             // so Promise.all doesn't fail
+            // If error contributes to reaching the ready threshold, enable early
+            if (!earlyMarked && isMounted && (loaded + failed) >= readyThreshold) {
+              earlyMarked = true;
+              setLoadProgress(100);
+              setIsLoaded(true);
+              console.log('Early images ready (with failures), enabling scroll');
+            }
+
             resolve(img);
           };
         });
@@ -67,10 +92,10 @@ export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
       
       setImages(loadedImages);
       setLoadProgress(100);
-      
+
       // Small delay to ensure canvas is ready and first frame renders
       setTimeout(() => {
-        if (isMounted) {
+        if (isMounted && !earlyMarked) {
           setIsLoaded(true);
           console.log('Images ready, enabling scroll');
         }

@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import Image from "next/image"
-import { MouseEvent, useState } from "react"
+import { MouseEvent, useState, useEffect } from "react"
 
 const projects = [
     {
@@ -48,57 +48,74 @@ const projects = [
 ];
 
 function NumberedImage({ project, index }: { project: any; index: number }) {
-    const exts = [".png", ".jpg", ".jpeg", ".webp"]
-    const [currentExt, setCurrentExt] = useState(0)
-    const [imageLoaded, setImageLoaded] = useState(false)
-    const [imageFailed, setImageFailed] = useState(false)
+    const exts = [".png"]
+    const [foundSrc, setFoundSrc] = useState<string | null>(null)
+    const [checking, setChecking] = useState(true)
     const explicit = project.images && project.images.length > 0 ? project.images[0] : null
-    
-    // Use explicit image if available, otherwise try numbered files
-    const src = explicit ?? `/project_assets/${index + 1}${exts[currentExt]}`
 
-    const handleLoad = () => {
-        setImageLoaded(true)
-    }
+    // Check for the presence of explicit image or numbered image files.
+    // If found, `foundSrc` will be set and the Image will be rendered;
+    // otherwise fall back to the default design background below.
+    useEffect(() => {
+        let mounted = true
+        setFoundSrc(null)
+        setChecking(true)
 
-    const handleError = () => {
-        // If all extensions tried or explicit image failed, show design
-        if (explicit || currentExt >= exts.length - 1) {
-            setImageFailed(true)
-            return
+        const candidates: string[] = explicit
+            ? [explicit]
+            : exts.map((ext) => `/project_assets/${index + 1}${ext}`)
+
+        ;(async () => {
+            for (const c of candidates) {
+                if (!mounted) return
+                try {
+                    // Try HEAD first to avoid downloading the whole file; some servers
+                    // may not support HEAD so fall back to GET.
+                    let res = null
+                    try {
+                        res = await fetch(c, { method: 'HEAD' })
+                    } catch (err) {
+                        // HEAD failed — try GET
+                        res = await fetch(c, { method: 'GET' })
+                    }
+
+                    if (res && res.ok) {
+                        if (mounted) {
+                            setFoundSrc(c)
+                            setChecking(false)
+                        }
+                        return
+                    }
+                } catch (e) {
+                    // ignore and continue
+                }
+            }
+
+            if (mounted) setChecking(false)
+        })()
+
+        return () => {
+            mounted = false
         }
-        // Try next extension
-        setCurrentExt(currentExt + 1)
-    }
+    }, [explicit, index])
 
-    // Show actual image if loaded successfully
-    if (imageLoaded && !imageFailed) {
+    // If we found a valid image, render it
+    if (foundSrc) {
         return (
             <div className="absolute inset-0">
-                <Image
-                    src={src}
-                    alt={`${project.title} preview`}
-                    fill
-                    className="object-cover"
-                    priority={index < 2}
-                />
+                <Image src={foundSrc} alt={`${project.title} preview`} fill className="object-cover" priority={index < 2} />
                 <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-transparent" />
             </div>
         )
     }
 
-    // Show design background while attempting or if image not found
+    // While checking or if not found, fall back to the default design background
+    // (this covers both loading and missing-file cases)
     return (
         <>
-            <img
-                src={src}
-                alt={`${project.title} preview`}
-                className="hidden"
-                onLoad={handleLoad}
-                onError={handleError}
-            />
+            {/* Invisible preload attempt removed — using fetch to detect files now */}
             {/* Show design background while loading/attempting */}
-            {index === 0 && (
+                {index === 0 && (
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/30 via-blue-500/20 to-purple-500/30">
                     <div className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-cyan-400/40 rounded-full" />
                     <div className="absolute top-1/3 left-1/3 w-24 h-24 border-2 border-blue-400/40 rounded-full" />
