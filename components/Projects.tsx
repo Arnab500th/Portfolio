@@ -13,7 +13,8 @@ const projects = [
         tech: "Python · OpenCV · MediaPipe · pynput",
         github: "https://github.com/Arnab500th/Subway-Surfers-Pose-Control-Game-Computer-Vision-",
         demo: "https://youtu.be/IiCIRFEjUi0",
-        status: "completed"
+        status: "completed",
+        image: "/project_assets/1.png"
     },
     {
         title: "Computational String Art",
@@ -23,7 +24,8 @@ const projects = [
         tech: "Python · OpenCV · NumPy · Pillow",
         github: "https://github.com/Arnab500th/Computational-String-Art",
         demo: "https://youtu.be/p1gn4fEBtRE",
-        status: "completed"
+        status: "completed",
+        image: "/project_assets/2.png"
     },
     {
         title: "Speed Dating Compatibility Predictor",
@@ -43,18 +45,19 @@ const projects = [
         tech: "Python · YOLOv8 · ByteTrack · EasyOCR · FastAPI · SQLite · Twilio · OpenCV",
         github: "https://github.com/Arnab500th/Hackathon-Automated-Littering-Detection-and-Alert-System-for-Public-Spaces",
         demo: "https://www.youtube.com/watch?v=U9AvOBRZ0JI",
-        status: "completed"
+        status: "completed",
+        image: "/project_assets/4.png"
     },
 ];
 
 function NumberedImage({ project, index }: { project: any; index: number }) {
-    const explicit = project.images && project.images.length > 0 ? project.images[0] : null;
+    const imgSrc = project.image || (project.images && project.images.length > 0 ? project.images[0] : null);
 
-    // If an explicit image is provided in the array, use it
-    if (explicit) {
+    // If an image is provided, use it
+    if (imgSrc) {
         return (
             <div className="absolute inset-0">
-                <Image src={explicit} alt={`${project.title} preview`} fill className="object-cover" priority={index < 2} />
+                <Image src={imgSrc} alt={`${project.title} preview`} fill className="object-cover" priority={index < 2} />
                 <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-transparent" />
             </div>
         )
