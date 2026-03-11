@@ -57,8 +57,8 @@ const itemVariants = {
 
 export default function About() {
     return (
-        <section className="relative z-10 w-full min-h-[50vh] bg-black/50 backdrop-blur-sm py-20 px-4 md:px-12 border-t border-white/10">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 items-start">
+        <section className="relative z-10 w-full min-h-[50vh] bg-black/50 backdrop-blur-sm py-12 md:py-20 px-4 md:px-12 border-t border-white/10">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 md:gap-12 items-start">
 
                 {/* Left Column: Text Content */}
                 <div className="md:w-1/2">
@@ -66,7 +66,7 @@ export default function About() {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight"
+                        className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-6 md:mb-8 tracking-tight"
                     >
                         <div className="flex flex-col items-start">
                             <span>About Me</span>
@@ -79,7 +79,7 @@ export default function About() {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="space-y-6 text-white/80 font-light text-lg md:text-xl leading-relaxed"
+                        className="space-y-4 md:space-y-6 text-white/80 font-light text-base md:text-xl leading-relaxed"
                     >
                         <p>
                             I’m a first-year Computer Science student and <span className="text-blue-300 font-medium">Python-focused developer</span> exploring machine learning and computer vision. I enjoy understanding how systems work, solving real-world problems, and experimenting with intelligent and vision-based software.
@@ -89,7 +89,7 @@ export default function About() {
 
                         </p>
 
-                        <div className="bg-white/5 border-l-4 border-blue-500 p-6 rounded-r-xl backdrop-blur-md mt-8">
+                        <div className="bg-white/5 border-l-4 border-blue-500 p-4 md:p-6 rounded-r-xl backdrop-blur-md mt-6 md:mt-8">
                             <p className="text-white/90 italic">
                                 "Currently focused on deepening my skills in machine learning, computer vision, and backend engineering."
                             </p>

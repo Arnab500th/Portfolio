@@ -145,7 +145,7 @@ function ProjectCard({ project, index }: { project: any; index: number }) {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
             style={{ perspective: 1000 }}
-            className="h-[400px] relative"
+            className="h-[300px] md:h-[400px] relative"
         >
             <motion.div
                 onMouseMove={onMouseMove}
@@ -156,7 +156,7 @@ function ProjectCard({ project, index }: { project: any; index: number }) {
                     transformStyle: "preserve-3d",
                 }}
 
-                className="group relative w-full h-full overflow-hidden rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md p-8 flex flex-col justify-end transition-colors hover:border-white/20"
+                className="group relative w-full h-full overflow-hidden rounded-2xl md:rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md p-5 md:p-8 flex flex-col justify-end transition-colors hover:border-white/20"
             >
                 {/* Project Visual Background: prefer project images, fallback to abstract backgrounds */}
                 <div className="absolute inset-0 opacity-30 group-hover:opacity-40 transition-opacity duration-500">
@@ -181,11 +181,11 @@ function ProjectCard({ project, index }: { project: any; index: number }) {
                         {project.category}
                     </span>
 
-                    <h3 className="text-3xl font-bold text-white mb-2 flex items-center">
+                    <h3 className="text-xl md:text-3xl font-bold text-white mb-2 flex items-center">
                         {project.title}
                     </h3>
 
-                    <p className="text-white/60 leading-relaxed font-light">
+                    <p className="text-sm md:text-base text-white/60 leading-relaxed font-light">
                         {project.description}
                     </p>
                 </div>
@@ -265,13 +265,13 @@ function ProjectCard({ project, index }: { project: any; index: number }) {
 
 export default function Projects() {
     return (
-        <section className="relative z-10 w-full min-h-screen bg-black/50 backdrop-blur-sm py-32 px-4 md:px-12">
+        <section className="relative z-10 w-full min-h-screen bg-black/50 backdrop-blur-sm py-16 md:py-32 px-4 md:px-12">
             <div className="max-w-7xl mx-auto">
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
-                    className="text-4xl md:text-6xl font-bold text-white mb-24 tracking-tight"
+                    className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-12 md:mb-24 tracking-tight"
                 >
                     Projects
                     <div className="w-26 h-1 mt-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full " />

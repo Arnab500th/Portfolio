@@ -100,7 +100,7 @@ function WorkCard({ work, index }: { work: WorkExperience; index: number }) {
             initial={{ opacity: 0, x: -100 }}       // start 100px left
             whileInView={{ opacity: 1, x: 0 }}     // slide to normal position
             transition={{ duration: 0.6, delay: index * 0.1 }}
-        
+
             style={{ perspective: 1000 }}
             className="relative pl-8 pb-12 last:pb-0"
         >
@@ -121,7 +121,7 @@ function WorkCard({ work, index }: { work: WorkExperience; index: number }) {
                     rotateY,
                     transformStyle: "preserve-3d"
                 }}
-                className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-6 hover:border-blue-400/30 transition-all duration-300"
+                className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-4 md:p-6 hover:border-blue-400/30 transition-all duration-300"
             >
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -130,7 +130,7 @@ function WorkCard({ work, index }: { work: WorkExperience; index: number }) {
                     {/* Header */}
                     <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-1">{work.role}</h3>
+                            <h3 className="text-lg md:text-xl font-bold text-white mb-1">{work.role}</h3>
                             <p className="text-blue-300 font-medium">{work.company}</p>
                         </div>
                         {work.current && (
@@ -209,7 +209,7 @@ function EducationCard({ edu, index }: { edu: Education; index: number }) {
             initial={{ opacity: 0, x: 100 }}       // start 100px left
             whileInView={{ opacity: 1, x: 0 }}     // slide to normal position
             transition={{ duration: 0.6, delay: index * 0.1 }}
-        
+
             style={{ perspective: 1000 }}
             className="relative pl-8 pb-12 last:pb-0"
         >
@@ -232,7 +232,7 @@ function EducationCard({ edu, index }: { edu: Education; index: number }) {
                     rotateY,
                     transformStyle: "preserve-3d"
                 }}
-                className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-6 hover:border-emerald-400/30 transition-all duration-300"
+                className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-4 md:p-6 hover:border-emerald-400/30 transition-all duration-300"
             >
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -241,7 +241,7 @@ function EducationCard({ edu, index }: { edu: Education; index: number }) {
                     {/* Header */}
                     <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-1">{edu.degree}</h3>
+                            <h3 className="text-lg md:text-xl font-bold text-white mb-1">{edu.degree}</h3>
                             <p className="text-emerald-400 font-medium">{edu.institution}</p>
                         </div>
                         {edu.current && (
@@ -276,17 +276,17 @@ function EducationCard({ edu, index }: { edu: Education; index: number }) {
 
 export default function Experience() {
     return (
-        <section className="relative z-10 w-full min-h-screen bg-black/50 backdrop-blur-sm py-32 px-4 md:px-12">
+        <section className="relative z-10 w-full min-h-screen bg-black/50 backdrop-blur-sm py-16 md:py-32 px-4 md:px-12">
             <div className="max-w-7xl mx-auto">
                 {/* Section Title */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
-                
-                    className="mb-16 text-center"
+
+                    className="mb-10 md:mb-16 text-center"
                 >
-                    <h2 className="text-4xl md:text-6xl font-bold text-white mb-2 tracking-tight leading-tight">
+                    <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-2 tracking-tight leading-tight">
                         <span>Experience & Education</span>
                     </h2>
                     <div className="w-32 h-1 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full mx-auto mb-6" />
@@ -301,7 +301,7 @@ export default function Experience() {
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.6 }}
-                        
+
                             className="mb-8"
                         >
                             <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-3">
@@ -324,7 +324,7 @@ export default function Experience() {
                             initial={{ opacity: 0, x: 20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.6 }}
-                        
+
                             className="mb-8"
                         >
                             <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-3">

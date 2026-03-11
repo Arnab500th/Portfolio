@@ -199,7 +199,7 @@ export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
           className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black backdrop-blur-md"
         >
           {/* Logo / Central Element */}
-          <div className="relative flex items-center justify-center w-32 h-32 mb-12">
+          <div className="relative flex items-center justify-center w-20 h-20 md:w-32 md:h-32 mb-8 md:mb-12">
             {/* Outer rotating pulse */}
             <motion.div
               animate={{ rotate: 360, scale: [1, 1.1, 1] }}
@@ -210,13 +210,13 @@ export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
             <motion.div
               animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-12 h-12 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.8)]"
+              className="w-8 h-8 md:w-12 md:h-12 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.8)]"
             />
           </div>
 
           <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8">
             {/* Loading text with animated dots */}
-            <div className="flex items-center gap-2 text-xl font-light text-white/90 tracking-widest uppercase">
+            <div className="flex items-center gap-2 text-base md:text-xl font-light text-white/90 tracking-widest uppercase">
               Initializing
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
