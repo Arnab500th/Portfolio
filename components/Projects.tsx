@@ -36,86 +36,36 @@ const projects = [
         status: "in-progress"
     },
     {
-        title: "Voice-Activated Personal Assistant",
-        category: "Python Automation",
+        title: "TRACE — Littering Detection & Alert System",
+        category: "AI · Computer Vision",
         description:
-            "Voice assistant using speech recognition and TTS to execute commands, answer queries, and perform automation tasks.",
-        tech: "Python · Pandas · SpeechRecognition · gTTS · Playsound · Requests · Word2Number",
-        github: "https://github.com/Arnab500th/Voice-Activated-Personal-Assistant",
-        demo: "TBA (YouTube link to be attached)",
+            "End-to-end real-time AI surveillance pipeline detecting littering across live camera feeds with geofenced WhatsApp alerts to nearest municipality offices. 🥈 2nd Place — NextGenHack 2026.",
+        tech: "Python · YOLOv8 · ByteTrack · EasyOCR · FastAPI · SQLite · Twilio · OpenCV",
+        github: "https://github.com/Arnab500th/Hackathon-Automated-Littering-Detection-and-Alert-System-for-Public-Spaces",
+        demo: "https://www.youtube.com/watch?v=U9AvOBRZ0JI",
         status: "completed"
     },
 ];
 
 function NumberedImage({ project, index }: { project: any; index: number }) {
-    const exts = [".png"]
-    const [foundSrc, setFoundSrc] = useState<string | null>(null)
-    const [checking, setChecking] = useState(true)
-    const explicit = project.images && project.images.length > 0 ? project.images[0] : null
+    const explicit = project.images && project.images.length > 0 ? project.images[0] : null;
 
-    // Check for the presence of explicit image or numbered image files.
-    // If found, `foundSrc` will be set and the Image will be rendered;
-    // otherwise fall back to the default design background below.
-    useEffect(() => {
-        let mounted = true
-        setFoundSrc(null)
-        setChecking(true)
-
-        const candidates: string[] = explicit
-            ? [explicit]
-            : exts.map((ext) => `/project_assets/${index + 1}${ext}`)
-
-        ;(async () => {
-            for (const c of candidates) {
-                if (!mounted) return
-                try {
-                    // Try HEAD first to avoid downloading the whole file; some servers
-                    // may not support HEAD so fall back to GET.
-                    let res = null
-                    try {
-                        res = await fetch(c, { method: 'HEAD' })
-                    } catch (err) {
-                        // HEAD failed — try GET
-                        res = await fetch(c, { method: 'GET' })
-                    }
-
-                    if (res && res.ok) {
-                        if (mounted) {
-                            setFoundSrc(c)
-                            setChecking(false)
-                        }
-                        return
-                    }
-                } catch (e) {
-                    // ignore and continue
-                }
-            }
-
-            if (mounted) setChecking(false)
-        })()
-
-        return () => {
-            mounted = false
-        }
-    }, [explicit, index])
-
-    // If we found a valid image, render it
-    if (foundSrc) {
+    // If an explicit image is provided in the array, use it
+    if (explicit) {
         return (
             <div className="absolute inset-0">
-                <Image src={foundSrc} alt={`${project.title} preview`} fill className="object-cover" priority={index < 2} />
+                <Image src={explicit} alt={`${project.title} preview`} fill className="object-cover" priority={index < 2} />
                 <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-transparent" />
             </div>
         )
     }
 
-    // While checking or if not found, fall back to the default design background
-    // (this covers both loading and missing-file cases)
+    // fallback to the default design background
     return (
         <>
             {/* Invisible preload attempt removed — using fetch to detect files now */}
             {/* Show design background while loading/attempting */}
-                {index === 0 && (
+            {index === 0 && (
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/30 via-blue-500/20 to-purple-500/30">
                     <div className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-cyan-400/40 rounded-full" />
                     <div className="absolute top-1/3 left-1/3 w-24 h-24 border-2 border-blue-400/40 rounded-full" />
@@ -142,10 +92,23 @@ function NumberedImage({ project, index }: { project: any; index: number }) {
                 </div>
             )}
             {index === 3 && (
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/30 via-teal-500/20 to-blue-500/30">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 border-2 border-cyan-400/30 rounded-full" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 border-2 border-teal-400/20 rounded-full" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 border-2 border-blue-400/10 rounded-full" />
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-cyan-500/15 to-blue-500/25">
+                    <svg className="absolute inset-0 w-full h-full opacity-40" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="surveillanceGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(34,211,238,0.25)" strokeWidth="0.5" />
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#surveillanceGrid)" />
+                        <line x1="50%" y1="28%" x2="50%" y2="72%" stroke="rgba(52,211,153,0.4)" strokeWidth="1" strokeDasharray="4 4" />
+                        <line x1="28%" y1="50%" x2="72%" y2="50%" stroke="rgba(52,211,153,0.4)" strokeWidth="1" strokeDasharray="4 4" />
+                        <circle cx="50%" cy="50%" r="14%" fill="none" stroke="rgba(52,211,153,0.3)" strokeWidth="1" />
+                        <circle cx="50%" cy="50%" r="5%" fill="none" stroke="rgba(34,211,238,0.5)" strokeWidth="1.5" />
+                    </svg>
+                    <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-emerald-400/60" />
+                    <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-emerald-400/60" />
+                    <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-emerald-400/60" />
+                    <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-emerald-400/60" />
                 </div>
             )}
         </>
@@ -189,7 +152,7 @@ function ProjectCard({ project, index }: { project: any; index: number }) {
                     rotateY,
                     transformStyle: "preserve-3d",
                 }}
-                
+
                 className="group relative w-full h-full overflow-hidden rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md p-8 flex flex-col justify-end transition-colors hover:border-white/20"
             >
                 {/* Project Visual Background: prefer project images, fallback to abstract backgrounds */}

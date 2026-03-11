@@ -1,6 +1,6 @@
 "use client";
 
-import { useScroll, useMotionValueEvent, useSpring, useTransform } from "framer-motion";
+import { useScroll, useMotionValueEvent, useSpring, useTransform, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
@@ -27,77 +27,55 @@ export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
     let isMounted = true;
     let loaded = 0;
     let failed = 0;
-    let earlyMarked = false;
 
     const loadImages = async () => {
       console.log(`Starting to load ${numFrames} images...`);
-      
-      // Determine a small threshold so we can enable scrolling early
-      const readyThreshold = Math.max(5, Math.ceil(numFrames * 0.15));
 
       const imagePromises = Array.from({ length: numFrames }, (_, i) => {
         const img = new Image();
         const filename = i.toString().padStart(3, "0");
-        img.src = `/sequence/${filename}.png`;
+        img.src = `/sequence_webp/${filename}.webp`;
 
         return new Promise<HTMLImageElement>((resolve, reject) => {
           img.onload = () => {
             if (isMounted) {
               loaded++;
-              // Map incremental progress to 0-90% so final jump to 100% feels faster
-              const progress = Math.round((loaded + failed) / numFrames * 90);
+              // Map incremental progress straight to 100% because we wait for all images
+              const progress = Math.round((loaded + failed) / numFrames * 100);
               setLoadedCount(loaded);
               setLoadProgress(progress);
-              console.log(`✓ Loaded: ${filename}.png (${loaded}/${numFrames})`);
+              console.log(`✓ Loaded: ${filename}.webp (${loaded}/${numFrames})`);
             }
-            // If we've reached the small ready threshold, enable scroll early
-            if (!earlyMarked && isMounted && (loaded + failed) >= readyThreshold) {
-              earlyMarked = true;
-              setLoadProgress(100);
-              setIsLoaded(true);
-              console.log('Early images ready, enabling scroll');
-            }
-
             resolve(img);
           };
-          
+
           img.onerror = (e) => {
             if (isMounted) {
               failed++;
-              const progress = Math.round((loaded + failed) / numFrames * 90);
+              const progress = Math.round((loaded + failed) / numFrames * 100);
               setFailedCount(failed);
               setLoadProgress(progress);
-              console.error(`✗ Failed: ${filename}.png (${failed} failures)`);
+              console.error(`✗ Failed: ${filename}.webp (${failed} failures)`);
             }
-            // Still resolve with the image object even on error
-            // so Promise.all doesn't fail
-            // If error contributes to reaching the ready threshold, enable early
-            if (!earlyMarked && isMounted && (loaded + failed) >= readyThreshold) {
-              earlyMarked = true;
-              setLoadProgress(100);
-              setIsLoaded(true);
-              console.log('Early images ready (with failures), enabling scroll');
-            }
-
             resolve(img);
           };
         });
       });
 
       const loadedImages = await Promise.all(imagePromises);
-      
+
       if (!isMounted) return;
 
       console.log(`Loading complete: ${loaded} loaded, ${failed} failed out of ${numFrames} total`);
-      
+
       setImages(loadedImages);
       setLoadProgress(100);
 
       // Small delay to ensure canvas is ready and first frame renders
       setTimeout(() => {
-        if (isMounted && !earlyMarked) {
+        if (isMounted) {
           setIsLoaded(true);
-          console.log('Images ready, enabling scroll');
+          console.log('All images ready, enabling scroll');
         }
       }, 200);
     };
@@ -214,20 +192,60 @@ export default function ScrollyCanvas({ numFrames }: { numFrames: number }) {
         className="block h-full w-full object-cover"
       />
       {!isLoaded && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white/20 gap-4">
-          <div className="text-xl font-light">Loading Experience</div>
-          <div className="w-48 h-[1px] bg-white/10 overflow-hidden">
-            <div
-              className="h-full bg-white/50 transition-all duration-300 ease-out"
-              style={{ width: `${loadProgress}%` }}
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black backdrop-blur-md"
+        >
+          {/* Logo / Central Element */}
+          <div className="relative flex items-center justify-center w-32 h-32 mb-12">
+            {/* Outer rotating pulse */}
+            <motion.div
+              animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 rounded-full border border-white/10 border-t-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)]"
+            />
+            {/* Inner pulsing core */}
+            <motion.div
+              animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-12 h-12 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.8)]"
             />
           </div>
-          <div className="text-xs font-mono">{loadProgress}%</div>
-          <div className="text-xs font-mono text-white/10">
-            {loadedCount} / {numFrames} loaded
-            {failedCount > 0 && ` (${failedCount} failed)`}
+
+          <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8">
+            {/* Loading text with animated dots */}
+            <div className="flex items-center gap-2 text-xl font-light text-white/90 tracking-widest uppercase">
+              Initializing
+              <motion.span
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, times: [0, 0.5, 1] }}
+              >
+                ...
+              </motion.span>
+            </div>
+
+            {/* Premium Progress Bar */}
+            <div className="w-full relative h-[2px] rounded-full bg-white/10 overflow-hidden">
+              <motion.div
+                className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-white shadow-[0_0_10px_rgba(34,211,238,0.5)]"
+                initial={{ width: "0%" }}
+                animate={{ width: `${loadProgress}%` }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              />
+            </div>
+
+            {/* Metrics */}
+            <div className="flex justify-between w-full text-xs font-mono text-white/50">
+              <span>{Math.round(loadProgress)}%</span>
+              <span className="flex gap-2">
+                <span>{loadedCount}/{numFrames}</span>
+                {failedCount > 0 && <span className="text-red-400 capitalize">({failedCount} failed)</span>}
+              </span>
+            </div>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

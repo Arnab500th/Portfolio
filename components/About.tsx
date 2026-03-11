@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
     SiPython,
     SiOpencv,
@@ -15,6 +16,7 @@ import {
     SiFastapi,
     SiFlask,
     SiMysql,
+    SiTwilio,
 } from "react-icons/si";
 import { FaLaptopCode } from "react-icons/fa";
 
@@ -34,6 +36,8 @@ const skills = [
     { name: "HTML", icon: SiHtml5, color: "#E34F26" },
     { name: "CSS", icon: SiCss3, color: "#1572B6" },
     { name: "C", icon: SiC, color: "#A8B9CC" },
+    { name: "YOLO", icon: null, color: "#00FFAA", imgSrc: "/ultralytics.png" },
+    { name: "Twilio", icon: SiTwilio, color: "#F22F46" },
 ];
 
 const containerVariants = {
@@ -105,7 +109,7 @@ export default function About() {
                         <div className="w-20 h-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full mt-2 " />
 
                     </motion.h3>
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-wrap gap-2.5">
                         {skills.map((skill, index) => (
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
@@ -113,11 +117,15 @@ export default function About() {
                                 transition={{ duration: 0.8, delay: 0.2 }}
                                 key={index}
                                 variants={itemVariants}
-                                whileHover={{ scale: 1.05, y: -5 }}
-                                className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl flex items-center gap-3 backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all cursor-default group"
+                                whileHover={{ scale: 1.05, y: -4 }}
+                                className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg flex items-center gap-2 backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all cursor-default group"
                             >
-                                <skill.icon className="text-2xl transition-colors" style={{ color: skill.color }} />
-                                <span className="text-sm md:text-base font-medium text-gray-300 group-hover:text-white transition-colors">
+                                {skill.imgSrc ? (
+                                    <Image src={skill.imgSrc} alt={skill.name} width={18} height={18} className="object-contain" />
+                                ) : skill.icon ? (
+                                    <skill.icon className="text-lg transition-colors" style={{ color: skill.color }} />
+                                ) : null}
+                                <span className="text-xs md:text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
                                     {skill.name}
                                 </span>
                             </motion.div>
